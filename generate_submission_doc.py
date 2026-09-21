@@ -46,7 +46,7 @@ def create_document():
     info_table.alignment = WD_TABLE_ALIGNMENT.CENTER
     info_data = [
         ("Course / Project:", "Cloud Computing / Distributed Microservices Project 2"),
-        ("Student Name:", "[Your Full Name]"),
+        ("Student Name:", "Sokhadom Khorn"),
         ("Student ID:", "[Your Student ID]"),
         ("Date:", "September 2026")
     ]
@@ -174,10 +174,10 @@ def create_document():
     h_t4.paragraph_format.space_before = Pt(14)
     p_t4 = doc.add_paragraph(
         "The project source code in GitHub was updated with the downstream target EC2 Public IPs configured in 'APIGateway_Microservice/index.js'.\n"
-        "GitHub Repository URL: [YOUR_UPDATED_GITHUB_REPO_URL]\n"
+        "GitHub Repository URL: https://github.com/SokhadomKhorn/University_Project2\n"
         "Commands executed on EC2 instances:\n"
-        "  git clone [YOUR_UPDATED_GITHUB_REPO_URL]\n"
-        "  cd University_Project-main\n"
+        "  git clone https://github.com/SokhadomKhorn/University_Project2.git\n"
+        "  cd University_Project2\n"
         "  npm run install:all"
     )
     p_t4.paragraph_format.space_after = Pt(8)
