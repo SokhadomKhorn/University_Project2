@@ -1,0 +1,331 @@
+{
+  "info": {
+    "_postman_id": "9f38b4c2-01a5-48cd-b82b-ec2project2postman",
+    "name": "Project_2_EC2_MultiInstance_Collection",
+    "description": "Postman Collection for Project 2 - 3 EC2 Multi-Instance Microservices Architecture with RBAC & Gateway Routing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "gateway_url",
+      "value": "http://44.214.139.176:4000",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Task 5.1 - Add a New Record",
+      "item": [
+        {
+          "name": "Task 5.1: Register New User (David Brown)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"David Brown\",\n  \"email\": \"david.brown@university.edu\",\n  \"password\": \"DavidPass123!\",\n  \"role\": \"user\",\n  \"phone\": \"+1-555-432-8765\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/register/userregister",
+              "host": ["{{gateway_url}}"],
+              "path": ["register", "userregister"]
+            },
+            "description": "Task 5.1: Adds a new user record through API Gateway. Expects HTTP 201 Created."
+          },
+          "response": []
+        },
+        {
+          "name": "Optional: Register Admin Sarah (For Admin Login)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin Sarah\",\n  \"email\": \"admin.sarah@university.edu\",\n  \"password\": \"AdminPass123!\",\n  \"role\": \"admin\",\n  \"phone\": \"+1-555-987-6543\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/register/userregister",
+              "host": ["{{gateway_url}}"],
+              "path": ["register", "userregister"]
+            },
+            "description": "Registers an Admin account to be used for Task 6.1 and 7.1."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Task 5.2 - Same EmailId Cannot Insert Again",
+      "item": [
+        {
+          "name": "Task 5.2: Duplicate Email Registration Rejection",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"David Duplicate\",\n  \"email\": \"david.brown@university.edu\",\n  \"password\": \"NewPassword123!\",\n  \"role\": \"user\",\n  \"phone\": \"+1-555-111-2222\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/register/userregister",
+              "host": ["{{gateway_url}}"],
+              "path": ["register", "userregister"]
+            },
+            "description": "Task 5.2: Verifies unique email constraint. Expects HTTP 400 Bad Request."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Task 6.1 - Login as Admin & Generate JWT",
+      "item": [
+        {
+          "name": "Task 6.1: Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set(\"admin_token\", jsonData.token);",
+                  "    console.log(\"Saved admin_token successfully!\");",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin.sarah@university.edu\",\n  \"password\": \"AdminPass123!\",\n  \"role\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/auth/login",
+              "host": ["{{gateway_url}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Task 6.1: Authenticates Admin credentials and returns signed JWT token. The token is automatically saved to collection variable {{admin_token}}."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Task 6.2 - Login as User & Generate JWT",
+      "item": [
+        {
+          "name": "Task 6.2: User Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set(\"user_token\", jsonData.token);",
+                  "    console.log(\"Saved user_token successfully!\");",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"david.brown@university.edu\",\n  \"password\": \"DavidPass123!\",\n  \"role\": \"user\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/auth/login",
+              "host": ["{{gateway_url}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Task 6.2: Authenticates User credentials and returns signed JWT token. The token is automatically saved to collection variable {{user_token}}."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Task 7.1 - Admin + Admin JWT call viewalluser",
+      "item": [
+        {
+          "name": "Task 7.1: View All Users (Admin Role)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/admin/viewalluser",
+              "host": ["{{gateway_url}}"],
+              "path": ["admin", "viewalluser"]
+            },
+            "description": "Task 7.1: As Admin with Admin JWT, fetch all registered users from MongoDB. Expects HTTP 200 OK."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Task 7.2 - User + User JWT call updateprofile",
+      "item": [
+        {
+          "name": "Task 7.2: Update Profile (User Role)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"David Brown Updated\",\n  \"phone\": \"+1-555-999-0000\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/user/updateprofile",
+              "host": ["{{gateway_url}}"],
+              "path": ["user", "updateprofile"]
+            },
+            "description": "Task 7.2: As User with User JWT, update own profile details. Expects HTTP 200 OK."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Task 8.1 - Admin + User JWT call updateprofile",
+      "item": [
+        {
+          "name": "Task 8.1: Access User updateprofile using Admin JWT (RBAC Rejection)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin Attempting User Update\",\n  \"phone\": \"+1-555-000-9999\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/user/updateprofile",
+              "host": ["{{gateway_url}}"],
+              "path": ["user", "updateprofile"]
+            },
+            "description": "Task 8.1: Admin JWT used against /user/updateprofile. API Gateway RBAC blocks this because role 'user' is required. Expects HTTP 403 Forbidden."
+          },
+          "response": []
+        },
+        {
+          "name": "Task 8.1 Alt: Calling updateprofile with User JWT but Admin Claims in Body",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"David Brown Role Tamper Attempt\",\n  \"role\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/user/updateprofile",
+              "host": ["{{gateway_url}}"],
+              "path": ["user", "updateprofile"]
+            },
+            "description": "Demonstrates User profile update cannot escalate privileges to Admin."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Task 8.2 - User + Admin JWT call viewalluser",
+      "item": [
+        {
+          "name": "Task 8.2: Access Admin viewalluser using User JWT (RBAC Rejection)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/admin/viewalluser",
+              "host": ["{{gateway_url}}"],
+              "path": ["admin", "viewalluser"]
+            },
+            "description": "Task 8.2: User JWT used against /admin/viewalluser. API Gateway RBAC blocks this because role 'admin' is required. Expects HTTP 403 Forbidden."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

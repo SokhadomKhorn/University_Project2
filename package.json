@@ -1,0 +1,26 @@
+{
+  "name": "central-identity-platform",
+  "version": "1.0.0",
+  "description": "Central Identity and User Management Platform - 5 Microservices Architecture",
+  "scripts": {
+    "install:all": "npm install && cd APIGateway_Microservice && npm install && cd ../Registration_Microservice && npm install && cd ../Login_Microservice && npm install && cd ../Admin_Microservice && npm install && cd ../User_Microservice && npm install",
+    "start:gateway": "node APIGateway_Microservice/index.js",
+    "start:register": "node Registration_Microservice/index.js",
+    "start:login": "node Login_Microservice/index.js",
+    "start:admin": "node Admin_Microservice/index.js",
+    "start:user": "node User_Microservice/index.js",
+    "start:all": "concurrently --kill-others-on-fail -n \"GATEWAY,REGISTER,LOGIN,ADMIN,USER\" -c \"blue,green,yellow,magenta,cyan\" \"npm run start:gateway\" \"npm run start:register\" \"npm run start:login\" \"npm run start:admin\" \"npm run start:user\"",
+    "start": "node start-all.js",
+    "test:apis": "node test-suite.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "concurrently": "^8.2.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^4.19.2",
+    "http-proxy": "^1.18.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.3.1"
+  }
+}

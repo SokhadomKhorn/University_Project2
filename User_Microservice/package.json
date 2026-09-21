@@ -1,0 +1,15 @@
+{
+  "name": "user-microservice",
+  "version": "1.0.0",
+  "description": "User Microservice for Central Identity Platform",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.3.1"
+  }
+}

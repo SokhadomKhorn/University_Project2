@@ -1,0 +1,510 @@
+{
+  "info": {
+    "_postman_id": "c7a8b912-4e89-4d23-9f87-34a9b0e12345",
+    "name": "Central_Identity_Platform_5_Microservices",
+    "description": "Comprehensive Postman collection for University Central Identity and User Management Platform (5 Microservices with API Gateway & Role-Based JWT)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000",
+      "type": "string"
+    },
+    {
+      "key": "user_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Task 5 - Registration Microservice",
+      "item": [
+        {
+          "name": "1. Register Student/User Account (Success)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alice Johnson\",\n  \"email\": \"alice@university.edu\",\n  \"password\": \"alicePass123!\",\n  \"role\": \"user\",\n  \"phone\": \"+1-555-0199\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/register/userregister",
+              "host": ["{{baseUrl}}"],
+              "path": ["register", "userregister"]
+            },
+            "description": "Registers a new user/student account with hashed password in MongoDB."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Register Admin Account (Success)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin Michael\",\n  \"email\": \"admin@university.edu\",\n  \"password\": \"adminPass123!\",\n  \"role\": \"admin\",\n  \"phone\": \"+1-555-0100\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/register/userregister",
+              "host": ["{{baseUrl}}"],
+              "path": ["register", "userregister"]
+            },
+            "description": "Registers a new administrator account in MongoDB."
+          },
+          "response": []
+        },
+        {
+          "name": "3. Register Account To Be Deleted (For Task 8)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Bob Temporary\",\n  \"email\": \"bob.temp@university.edu\",\n  \"password\": \"bobPass123!\",\n  \"role\": \"user\",\n  \"phone\": \"+1-555-0188\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/register/userregister",
+              "host": ["{{baseUrl}}"],
+              "path": ["register", "userregister"]
+            },
+            "description": "Creates a temporary account to test admin deletion."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Register Duplicate Email (Expect Error 400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alice Duplicate\",\n  \"email\": \"alice@university.edu\",\n  \"password\": \"anotherPassword123!\",\n  \"role\": \"user\",\n  \"phone\": \"+1-555-0199\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/register/userregister",
+              "host": ["{{baseUrl}}"],
+              "path": ["register", "userregister"]
+            },
+            "description": "Verifies that duplicate emails are rejected by Registration microservice."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Task 6 - Login Microservice",
+      "item": [
+        {
+          "name": "1. Login as User (Success - Returns JWT)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('user_token', jsonData.token);",
+                  "    console.log('User Token saved:', jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alice@university.edu\",\n  \"password\": \"alicePass123!\",\n  \"role\": \"user\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Validates user email, password, and role. Returns JWT token."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Login as Admin (Success - Returns JWT)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('admin_token', jsonData.token);",
+                  "    console.log('Admin Token saved:', jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@university.edu\",\n  \"password\": \"adminPass123!\",\n  \"role\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Validates admin email, password, and role. Returns JWT token."
+          },
+          "response": []
+        },
+        {
+          "name": "3. Login with Invalid Password (Expect 401)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alice@university.edu\",\n  \"password\": \"wrongPassword999!\",\n  \"role\": \"user\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Verifies login fails when wrong password is supplied."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Login with Invalid Role (Expect 401)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alice@university.edu\",\n  \"password\": \"alicePass123!\",\n  \"role\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Verifies login fails when user tries to login claiming admin role."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Task 8 - Admin Microservice",
+      "item": [
+        {
+          "name": "1. Search User - Found (GET)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/searchuser?query=alice",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "searchuser"],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "alice"
+                }
+              ]
+            },
+            "description": "Admin searches for a user by name or email (Found scenario)."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Search User - Not Found (GET - Expect 404)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/searchuser?query=nonexistentuser9999",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "searchuser"],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "nonexistentuser9999"
+                }
+              ]
+            },
+            "description": "Admin searches for a non-existent user (Not Found scenario)."
+          },
+          "response": []
+        },
+        {
+          "name": "3. View All Users (GET)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/viewalluser",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "viewalluser"]
+            },
+            "description": "Admin views all users registered in the platform."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Delete User by Email (DELETE)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/deluser?email=bob.temp@university.edu",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "deluser"],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "bob.temp@university.edu"
+                }
+              ]
+            },
+            "description": "Admin deletes a user by their email address."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Task 9 - User Microservice",
+      "item": [
+        {
+          "name": "1. View Own Profile (GET)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/viewprofile",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "viewprofile"]
+            },
+            "description": "Student/User views their own profile using their JWT token."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Update Own Profile (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alice Johnson Updated\",\n  \"phone\": \"+1-555-9988\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/updateprofile",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "updateprofile"]
+            },
+            "description": "Student/User updates their own profile details."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Task 10 - Security & RBAC Enforcement",
+      "item": [
+        {
+          "name": "a) Access Admin API Without Token (Expect 401)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/viewalluser",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "viewalluser"]
+            },
+            "description": "Security test 10a: Accessing protected Admin API without token."
+          },
+          "response": []
+        },
+        {
+          "name": "a) Access User API Without Token (Expect 401)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/viewprofile",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "viewprofile"]
+            },
+            "description": "Security test 10a: Accessing protected User API without token."
+          },
+          "response": []
+        },
+        {
+          "name": "b) Access Admin API With Invalid Token (Expect 403)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer invalid.tampered.token.12345"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/viewalluser",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "viewalluser"]
+            },
+            "description": "Security test 10b: Accessing Admin API with forged/tampered token."
+          },
+          "response": []
+        },
+        {
+          "name": "b) Access User API With Invalid Token (Expect 403)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer invalid.tampered.token.12345"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/viewprofile",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "viewprofile"]
+            },
+            "description": "Security test 10b: Accessing User API with forged/tampered token."
+          },
+          "response": []
+        },
+        {
+          "name": "c) Using Admin Token to Access User API (Expect 403 Forbidden)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/viewprofile",
+              "host": ["{{baseUrl}}"],
+              "path": ["user", "viewprofile"]
+            },
+            "description": "Security test 10c: Admin token attempting to access User-only API."
+          },
+          "response": []
+        },
+        {
+          "name": "d) Using User Token to Access Admin API (Expect 403 Forbidden)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/viewalluser",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "viewalluser"]
+            },
+            "description": "Security test 10d: User token attempting to access Admin-only API."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
