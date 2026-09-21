@@ -1,6 +1,6 @@
 const http = require('http');
 
-const BASE_URL = 'http://localhost:4000';
+const BASE_URL = process.env.BASE_URL || process.argv[2] || 'http://localhost:4000';
 
 function makeRequest(method, path, body = null, headers = {}) {
   return new Promise((resolve, reject) => {
