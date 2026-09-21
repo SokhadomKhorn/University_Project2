@@ -2,7 +2,7 @@
 node_modules/
 package-lock.json
 
-# Environment and sensitive secrets
+# Environment and sensitive credentials
 .env
 .env.*
 !.env.example
@@ -10,18 +10,23 @@ package-lock.json
 *.key
 ec2_key*
 
-# Internal logs and databases
+# System & temporary logs
 *.log
 .data/
 npm-debug.log*
-
-# Temporary archives
 *.tar.gz
 *.zip
 
-# Helper scratch scripts
+# Academic submission deliverables (Submit directly to Canvas, not Git)
+*.docx
+*.pdf
+generate_submission_doc.py
+screenshots/
+
+# Cloud automation & helper scripts
+user-data-*.sh
+run-ec2-*.sh
+setup-ec2.sh
 reset_admin.js
 render_screenshots.py
-
-# Screenshots folder (Screenshots are submitted via PDF/Word in Canvas)
-screenshots/
+PROJECT_2_EC2_GUIDE.md
