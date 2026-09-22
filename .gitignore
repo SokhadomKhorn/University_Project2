@@ -17,11 +17,8 @@ npm-debug.log*
 *.tar.gz
 *.zip
 
-# Academic submission deliverables (Submit directly to Canvas, not Git)
-*.docx
-*.pdf
-generate_submission_doc.py
-screenshots/
+# Academic submission deliverables
+# (Enabled so you can continue your work and screenshots on your desktop PC)
 
 # Cloud automation & helper scripts
 user-data-*.sh
