@@ -2,28 +2,30 @@
 node_modules/
 package-lock.json
 
-# Environment and sensitive credentials
+# Environment & Sensitive Credentials
 .env
 .env.*
 !.env.example
 *.pem
 *.key
-ec2_key*
+labsuser.pem
 
-# System & temporary logs
+# System & Temporary Logs
 *.log
 .data/
 npm-debug.log*
 *.tar.gz
 *.zip
 
-# Academic submission deliverables
-# (Enabled so you can continue your work and screenshots on your desktop PC)
-
-# Cloud automation & helper scripts
+# Internal generator & scratch scripts (clean repository view for professor)
+generate_submission.py
+build_black_white_submission.py
+ocr_screenshots.ps1
 user-data-*.sh
 run-ec2-*.sh
 setup-ec2.sh
 reset_admin.js
 render_screenshots.py
-PROJECT_2_EC2_GUIDE.md
+
+# Raw screenshots folder (all verified screenshots are embedded inside the PDF)
+screenshots/
