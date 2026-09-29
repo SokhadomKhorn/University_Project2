@@ -6,8 +6,12 @@ try {
   dns.setServers(['8.8.8.8', '1.1.1.1', '8.8.4.4']);
 } catch (e) {}
 
-require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
-require('dotenv').config();
+try {
+  require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
+  require('dotenv').config();
+} catch (e) {
+  // Ignore if dotenv is not present
+}
 
 const connectDB = async () => {
   try {
