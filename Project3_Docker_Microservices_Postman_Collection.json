@@ -1,0 +1,200 @@
+{
+  "info": {
+    "_postman_id": "c7a8b910-1234-5678-9abc-dockercompose2026",
+    "name": "Project 3: Docker Microservices API Collection",
+    "description": "Postman API Collection for testing Registration and Login Microservices running inside Docker Compose on AWS EC2.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "ec2_ip",
+      "value": "localhost",
+      "type": "string"
+    },
+    {
+      "key": "reg_url",
+      "value": "http://{{ec2_ip}}:5001",
+      "type": "string"
+    },
+    {
+      "key": "login_url",
+      "value": "http://{{ec2_ip}}:5002",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Health Checks",
+      "item": [
+        {
+          "name": "Registration Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{reg_url}}/health",
+              "host": ["{{reg_url}}"],
+              "path": ["health"]
+            },
+            "description": "Checks if Registration Microservice is active and responding."
+          }
+        },
+        {
+          "name": "Login Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{login_url}}/health",
+              "host": ["{{login_url}}"],
+              "path": ["health"]
+            },
+            "description": "Checks if Login Microservice is active and responding."
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Registration Microservice (Port 5001)",
+      "item": [
+        {
+          "name": "Register User (/reg)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sokhadom Khorn\",\n  \"email\": \"sokhadom@university.edu\",\n  \"password\": \"Password123!\",\n  \"role\": \"user\",\n  \"phone\": \"+1-555-0199\"\n}"
+            },
+            "url": {
+              "raw": "{{reg_url}}/reg",
+              "host": ["{{reg_url}}"],
+              "path": ["reg"]
+            },
+            "description": "Registers a new user in MongoDB through Registration Microservice."
+          }
+        },
+        {
+          "name": "Register User (/register/userregister)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alice University\",\n  \"email\": \"alice@university.edu\",\n  \"password\": \"AlicePass123!\",\n  \"role\": \"user\",\n  \"phone\": \"+1-555-0200\"\n}"
+            },
+            "url": {
+              "raw": "{{reg_url}}/register/userregister",
+              "host": ["{{reg_url}}"],
+              "path": ["register", "userregister"]
+            },
+            "description": "Alternative endpoint for user registration."
+          }
+        },
+        {
+          "name": "Register Duplicate Email (Validation 400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sokhadom Duplicate\",\n  \"email\": \"sokhadom@university.edu\",\n  \"password\": \"Password123!\",\n  \"role\": \"user\",\n  \"phone\": \"+1-555-0199\"\n}"
+            },
+            "url": {
+              "raw": "{{reg_url}}/reg",
+              "host": ["{{reg_url}}"],
+              "path": ["reg"]
+            },
+            "description": "Tests validation error for duplicate email registration (Expects 400 Bad Request)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Login Microservice (Port 5002)",
+      "item": [
+        {
+          "name": "Login User (/login)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"sokhadom@university.edu\",\n  \"password\": \"Password123!\",\n  \"role\": \"user\"\n}"
+            },
+            "url": {
+              "raw": "{{login_url}}/login",
+              "host": ["{{login_url}}"],
+              "path": ["login"]
+            },
+            "description": "Authenticates user against MongoDB and returns JWT authentication token."
+          }
+        },
+        {
+          "name": "Login User (/auth/login)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"sokhadom@university.edu\",\n  \"password\": \"Password123!\",\n  \"role\": \"user\"\n}"
+            },
+            "url": {
+              "raw": "{{login_url}}/auth/login",
+              "host": ["{{login_url}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Alternative endpoint for user login returning JWT token."
+          }
+        },
+        {
+          "name": "Login Invalid Password (Expect 401)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"sokhadom@university.edu\",\n  \"password\": \"WrongPassword123!\",\n  \"role\": \"user\"\n}"
+            },
+            "url": {
+              "raw": "{{login_url}}/login",
+              "host": ["{{login_url}}"],
+              "path": ["login"]
+            },
+            "description": "Tests rejection when incorrect password is provided (Expects 401 Unauthorized)."
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+version: '3.8'
+
+# ==============================================================================
+# Docker Compose: University Microservices Architecture
+# Orchestrates Registration Microservice, Login Microservice, and MongoDB
+# ==============================================================================
+
+services:
+  # Database Service: MongoDB Datastore
+  mongodb:
+    image: mongo:7.0
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - microservices-network
+
+  # Registration Microservice (Port 5001)
+  registration-microservice:
+    build:
+      context: ./Registration_Microservice
+      dockerfile: Dockerfile
+    container_name: registration-microservice
+    restart: always
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - MONGO_URI=mongodb://mongodb:27017/university_identity_db
+    depends_on:
+      - mongodb
+    networks:
+      - microservices-network
+
+  # Login & Authentication Microservice (Port 5002)
+  login-microservice:
+    build:
+      context: ./Login_Microservice
+      dockerfile: Dockerfile
+    container_name: login-microservice
+    restart: always
+    ports:
+      - "5002:5002"
+    environment:
+      - PORT=5002
+      - MONGO_URI=mongodb://mongodb:27017/university_identity_db
+      - JWT_SECRET=UniversitySecretKey2026
+    depends_on:
+      - mongodb
+    networks:
+      - microservices-network
+
+networks:
+  microservices-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local

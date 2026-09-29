@@ -6,6 +6,8 @@ package-lock.json
 .env
 .env.*
 !.env.example
+atlas-credentials.env
+*.env
 *.pem
 *.key
 labsuser.pem
