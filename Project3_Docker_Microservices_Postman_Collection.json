@@ -8,7 +8,7 @@
   "variable": [
     {
       "key": "ec2_ip",
-      "value": "localhost",
+      "value": "54.160.209.207",
       "type": "string"
     },
     {
